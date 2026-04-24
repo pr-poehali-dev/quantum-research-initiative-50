@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "GET messages for channel",
+      "method": "GET",
+      "path": "/?channel=%D0%BE%D0%B1%D1%89%D0%B8%D0%B9",
+      "expectedStatus": 200,
+      "expectedBody": {"time": "06:23"},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST new message",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "channel": "общий",
+        "user": "Тест",
+        "avatar": "Т",
+        "color": "from-blue-500 to-indigo-500",
+        "text": "Тестовое сообщение"
+      },
+      "expectedStatus": 200,
+      "expectedBody": { "text": "Тестовое сообщение" },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

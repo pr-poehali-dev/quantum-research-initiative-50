@@ -145,13 +145,18 @@ const MEMBERS = [
   { name: "Вася", status: "Печатает...", avatar: "В", color: "from-cyan-400 to-blue-500", statusColor: "bg-[#3ba55c]", online: true },
 ];
 
+const API_URL = "https://functions.poehali.dev/b3eb4588-879d-4ad1-86a1-f3d5a18fd386";
+
+const USER = { name: "Вася", avatar: "В", color: "from-[#5865f2] to-[#7c3aed]" };
+
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [activeChannel, setActiveChannel] = useState("общий");
   const [visibleMessages, setVisibleMessages] = useState<ChatMessage[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState("");
+  const [sending, setSending] = useState(false);
   const [micActive, setMicActive] = useState(false);
   const [soundActive, setSoundActive] = useState(true);
   const [statsVisible, setStatsVisible] = useState(false);
@@ -159,54 +164,38 @@ const Index = () => {
   const statsRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-  const messageIndexRef = useRef(0);
+  const lastIdRef = useRef(0);
 
-  // Живой чат — добавляем сообщения по одному, перезапуск при смене канала
+  // Загрузка сообщений при смене канала
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    let cancelled = false;
-    const messages = CHANNEL_MESSAGES[activeChannel] ?? [];
-
-    messageIndexRef.current = 0;
     setVisibleMessages([]);
-    setIsTyping(false);
+    lastIdRef.current = 0;
+    setLoading(true);
+    fetch(`${API_URL}?channel=${encodeURIComponent(activeChannel)}`)
+      .then((r) => r.json())
+      .then((msgs: ChatMessage[]) => {
+        setVisibleMessages(msgs);
+        if (msgs.length > 0) lastIdRef.current = msgs[msgs.length - 1].id;
+      })
+      .finally(() => setLoading(false));
+  }, [activeChannel]);
 
-    const scheduleNext = (delay: number) => {
-      timeoutId = setTimeout(() => {
-        if (cancelled) return;
-
-        const idx = messageIndexRef.current;
-
-        if (idx < messages.length) {
-          setIsTyping(true);
-          timeoutId = setTimeout(() => {
-            if (cancelled) return;
-            setIsTyping(false);
-            const msg = messages[idx];
-            if (msg) {
-              setVisibleMessages((prev) => [...prev, msg]);
-              messageIndexRef.current = idx + 1;
-            }
-            scheduleNext(1800 + Math.random() * 600);
-          }, 900);
-        } else {
-          // Сброс цикла
-          timeoutId = setTimeout(() => {
-            if (cancelled) return;
-            messageIndexRef.current = 0;
-            setVisibleMessages([]);
-            scheduleNext(600);
-          }, 3000);
-        }
-      }, delay);
+  // Поллинг новых сообщений каждые 3 секунды
+  useEffect(() => {
+    const poll = () => {
+      fetch(`${API_URL}?channel=${encodeURIComponent(activeChannel)}`)
+        .then((r) => r.json())
+        .then((msgs: ChatMessage[]) => {
+          const newMsgs = msgs.filter((m) => m.id > lastIdRef.current);
+          if (newMsgs.length > 0) {
+            setVisibleMessages((prev) => [...prev, ...newMsgs]);
+            lastIdRef.current = newMsgs[newMsgs.length - 1].id;
+          }
+        })
+        .catch(() => {});
     };
-
-    scheduleNext(500);
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
+    const interval = setInterval(poll, 3000);
+    return () => clearInterval(interval);
   }, [activeChannel]);
 
   // Прокрутка чата вниз — только внутри контейнера, не всей страницы
@@ -215,7 +204,7 @@ const Index = () => {
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
-  }, [visibleMessages, isTyping]);
+  }, [visibleMessages]);
 
   // Intersection Observer для анимации секций
   useEffect(() => {
@@ -238,18 +227,29 @@ const Index = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
-    const newMsg: ChatMessage = {
-      id: Date.now(),
-      user: "Вася",
-      avatar: "В",
-      color: "from-[#5865f2] to-[#7c3aed]",
-      text: inputText,
-      time: new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }),
-    };
-    setVisibleMessages((prev) => [...prev, newMsg]);
+  const handleSendMessage = async () => {
+    const text = inputText.trim();
+    if (!text || sending) return;
     setInputText("");
+    setSending(true);
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channel: activeChannel,
+          user: USER.name,
+          avatar: USER.avatar,
+          color: USER.color,
+          text,
+        }),
+      });
+      const msg: ChatMessage = await res.json();
+      setVisibleMessages((prev) => [...prev, msg]);
+      lastIdRef.current = msg.id;
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -491,12 +491,19 @@ const Index = () => {
               <div className="w-full h-px bg-[#40444b] my-4"></div>
             </div>
 
-            {/* Живые сообщения */}
-            {visibleMessages.filter(Boolean).map((msg, index) => (
+            {/* Загрузка */}
+            {loading && (
+              <div className="flex items-center gap-2 px-2 py-3 text-[#b9bbbe] text-sm">
+                <div className="w-4 h-4 border-2 border-[#5865f2] border-t-transparent rounded-full animate-spin"></div>
+                Загрузка сообщений...
+              </div>
+            )}
+
+            {/* Сообщения из БД */}
+            {!loading && visibleMessages.filter(Boolean).map((msg) => (
               <div
                 key={msg.id}
                 className="flex gap-3 px-1 py-1 rounded-lg hover:bg-[#32353b] group transition-colors animate-msg-in"
-                style={{ animationDelay: `${index * 30}ms` }}
               >
                 <div
                   className={`w-9 h-9 bg-gradient-to-br ${msg.color ?? "from-[#5865f2] to-[#7c3aed]"} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm`}
@@ -506,25 +513,17 @@ const Index = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2">
                     <span className="text-white font-semibold text-sm hover:underline cursor-pointer">{msg.user}</span>
-                    <span className="text-[#72767d] text-[10px]">Сегодня в {msg.time}</span>
+                    <span className="text-[#72767d] text-[10px]">в {msg.time}</span>
                   </div>
                   <p className="text-[#dcddde] text-sm leading-relaxed">{msg.text}</p>
                 </div>
               </div>
             ))}
 
-            {/* Индикатор печатания */}
-            {isTyping && (
-              <div className="flex items-center gap-2 px-2 py-1 animate-fade-in">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-[#b9bbbe] rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                  <div className="w-2 h-2 bg-[#b9bbbe] rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                  <div className="w-2 h-2 bg-[#b9bbbe] rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-                </div>
-                <span className="text-[#b9bbbe] text-xs">кто-то печатает...</span>
-              </div>
+            {/* Пустой канал */}
+            {!loading && visibleMessages.length === 0 && (
+              <p className="text-[#72767d] text-sm px-2">Сообщений пока нет. Напиши первым!</p>
             )}
-            <div ref={chatEndRef} />
           </div>
 
           {/* Поле ввода */}
@@ -547,9 +546,13 @@ const Index = () => {
                 </button>
                 <button
                   onClick={handleSendMessage}
-                  className={`text-[#b9bbbe] hover:text-[#5865f2] transition-colors ${inputText.trim() ? "text-[#5865f2]" : ""}`}
+                  disabled={sending || !inputText.trim()}
+                  className={`transition-colors ${inputText.trim() && !sending ? "text-[#5865f2] hover:text-[#4752c4]" : "text-[#b9bbbe]"}`}
                 >
-                  <Send className="w-4 h-4" />
+                  {sending
+                    ? <div className="w-4 h-4 border-2 border-[#5865f2] border-t-transparent rounded-full animate-spin" />
+                    : <Send className="w-4 h-4" />
+                  }
                 </button>
               </div>
             </div>
