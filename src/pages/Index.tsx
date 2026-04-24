@@ -126,27 +126,44 @@ const Index = () => {
 
   // Живой чат — добавляем сообщения по одному
   useEffect(() => {
-    const addMessage = () => {
-      if (messageIndexRef.current < DEMO_MESSAGES.length) {
-        setIsTyping(true);
-        const delay = 800 + Math.random() * 600;
-        setTimeout(() => {
-          setIsTyping(false);
-          setVisibleMessages((prev) => [...prev, DEMO_MESSAGES[messageIndexRef.current]]);
-          messageIndexRef.current++;
-        }, delay);
-      } else {
-        // Зациклить
-        setTimeout(() => {
-          messageIndexRef.current = 0;
-          setVisibleMessages([]);
-        }, 3000);
-      }
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let cancelled = false;
+
+    const scheduleNext = (delay: number) => {
+      timeoutId = setTimeout(() => {
+        if (cancelled) return;
+
+        const idx = messageIndexRef.current;
+
+        if (idx < DEMO_MESSAGES.length) {
+          setIsTyping(true);
+          timeoutId = setTimeout(() => {
+            if (cancelled) return;
+            setIsTyping(false);
+            const msg = DEMO_MESSAGES[idx];
+            if (msg) {
+              setVisibleMessages((prev) => [...prev, msg]);
+              messageIndexRef.current = idx + 1;
+            }
+            scheduleNext(1800 + Math.random() * 600);
+          }, 900);
+        } else {
+          // Сброс цикла
+          timeoutId = setTimeout(() => {
+            if (cancelled) return;
+            messageIndexRef.current = 0;
+            setVisibleMessages([]);
+            scheduleNext(600);
+          }, 3000);
+        }
+      }, delay);
     };
 
-    const interval = setInterval(addMessage, 2200);
-    addMessage();
-    return () => clearInterval(interval);
+    scheduleNext(800);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   // Прокрутка чата вниз
@@ -429,14 +446,14 @@ const Index = () => {
             </div>
 
             {/* Живые сообщения */}
-            {visibleMessages.map((msg, index) => (
+            {visibleMessages.filter(Boolean).map((msg, index) => (
               <div
                 key={msg.id}
                 className="flex gap-3 px-1 py-1 rounded-lg hover:bg-[#32353b] group transition-colors animate-msg-in"
                 style={{ animationDelay: `${index * 30}ms` }}
               >
                 <div
-                  className={`w-9 h-9 bg-gradient-to-br ${msg.color} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm`}
+                  className={`w-9 h-9 bg-gradient-to-br ${msg.color ?? "from-[#5865f2] to-[#7c3aed]"} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm`}
                 >
                   <span className="text-white text-xs font-bold">{msg.avatar}</span>
                 </div>
