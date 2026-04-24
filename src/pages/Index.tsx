@@ -40,53 +40,16 @@ interface ChatMessage {
   time: string;
 }
 
-const CHANNEL_MESSAGES: Record<string, ChatMessage[]> = {
-  общий: [
-    { id: 1, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Привет всем! Только зарегистрировалась 🎉", time: "12:01" },
-    { id: 2, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Добро пожаловать! Здесь всё очень удобно 👍", time: "12:02" },
-    { id: 3, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Качество звонков просто супер 🔥", time: "12:03" },
-    { id: 4, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Уже провёл первую встречу с командой 💼", time: "12:05" },
-    { id: 5, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Регистрация за 30 секунд — это не шутки 😄", time: "12:08" },
-    { id: 6, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Уже зову всех подруг сюда 😍", time: "12:10" },
-    { id: 7, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Наконец мессенджер без рекламы!", time: "12:12" },
-  ],
-  знакомства: [
-    { id: 1, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Привет! Кто из Москвы? 👋", time: "13:00" },
-    { id: 2, user: "Артём", avatar: "Ар", color: "from-blue-400 to-sky-500", text: "Я из Питера, но привет всем! 🙌", time: "13:01" },
-    { id: 3, user: "Лена", avatar: "Л", color: "from-violet-400 to-purple-500", text: "Ищу собеседника для общения на английском 🇬🇧", time: "13:03" },
-    { id: 4, user: "Артём", avatar: "Ар", color: "from-blue-400 to-sky-500", text: "Лена, я могу! Пишу в личку ✉️", time: "13:04" },
-    { id: 5, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Тут такие милые люди 🥰", time: "13:06" },
-    { id: 6, user: "Олег", avatar: "О", color: "from-amber-400 to-orange-500", text: "Всем привет! Только пришёл 😊", time: "13:08" },
-    { id: 7, user: "Лена", avatar: "Л", color: "from-violet-400 to-purple-500", text: "Олег, добро пожаловать! 🎉", time: "13:09" },
-  ],
-  новости: [
-    { id: 1, user: "ВайбБот", avatar: "🤖", color: "from-[#5865f2] to-indigo-500", text: "📣 Новая версия 2.5 — добавлены реакции на сообщения!", time: "09:00" },
-    { id: 2, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Реакции наконец-то! Ждал этого 🎯", time: "09:05" },
-    { id: 3, user: "ВайбБот", avatar: "🤖", color: "from-[#5865f2] to-indigo-500", text: "🛡️ Обновление безопасности: улучшено шифрование звонков.", time: "09:10" },
-    { id: 4, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Отличные новости! Безопасность — это важно 🔒", time: "09:12" },
-    { id: 5, user: "ВайбБот", avatar: "🤖", color: "from-[#5865f2] to-indigo-500", text: "📱 iOS-приложение обновлено — исправлены баги с уведомлениями.", time: "09:20" },
-    { id: 6, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Да! Наконец-то уведомления работают 🙏", time: "09:22" },
-    { id: 7, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Команда ВайбЧат не перестаёт удивлять 🚀", time: "09:25" },
-  ],
-  помощь: [
-    { id: 1, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Как поменять аватар профиля?", time: "14:00" },
-    { id: 2, user: "Саппорт", avatar: "S", color: "from-[#5865f2] to-violet-500", text: "Привет! Зайди в Настройки → Профиль → Аватар 😊", time: "14:01" },
-    { id: 3, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Нашёл, спасибо! ❤️", time: "14:02" },
-    { id: 4, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Как создать групповой чат?", time: "14:05" },
-    { id: 5, user: "Саппорт", avatar: "S", color: "from-[#5865f2] to-violet-500", text: "Нажми '+' рядом с каналами и выбери 'Создать группу' 👍", time: "14:06" },
-    { id: 6, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Супер, всё получилось! Команда лучшая 🌟", time: "14:08" },
-    { id: 7, user: "Олег", avatar: "О", color: "from-amber-400 to-orange-500", text: "Можно ли восстановить удалённое сообщение?", time: "14:10" },
-  ],
-  мемы: [
-    { id: 1, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Когда наконец починили уведомления 😭🎉", time: "15:00" },
-    { id: 2, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "АХАХАХА это точно про меня 💀", time: "15:01" },
-    { id: 3, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Кто придумывает эти мемы — гений 😂", time: "15:03" },
-    { id: 4, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Я уже час тут сижу вместо работы 💅", time: "15:05" },
-    { id: 5, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Анна, я тебя понимаю 😅😅😅", time: "15:06" },
-    { id: 6, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Этот чат — лучшее что случалось с моей продуктивностью... нет. 💀", time: "15:08" },
-    { id: 7, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "☠️☠️☠️ УМЕРЛА", time: "15:09" },
-  ],
-};
+const DEMO_MESSAGES: ChatMessage[] = [
+  { id: 1, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Привет всем! Только зарегистрировалась 🎉", time: "12:01" },
+  { id: 2, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Добро пожаловать! Здесь всё очень удобно 👍", time: "12:02" },
+  { id: 3, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Качество звонков просто супер 🔥", time: "12:03" },
+  { id: 4, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Уже провёл первую встречу с командой 💼", time: "12:05" },
+  { id: 5, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Боже, видеозвонки без лагов! Наконец-то 😍", time: "12:06" },
+  { id: 6, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Регистрация за 30 секунд — это не шутки 😄", time: "12:08" },
+  { id: 7, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Уже позвал всех друзей. Все в восторге!", time: "12:09" },
+  { id: 8, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Групповые чаты работают молниеносно ⚡", time: "12:11" },
+];
 
 const STATS = [
   { value: "2M+", label: "Пользователей", icon: <Users className="w-5 h-5" /> },
@@ -145,66 +108,51 @@ const MEMBERS = [
   { name: "Вася", status: "Печатает...", avatar: "В", color: "from-cyan-400 to-blue-500", statusColor: "bg-[#3ba55c]", online: true },
 ];
 
-const API_URL = "https://functions.poehali.dev/b3eb4588-879d-4ad1-86a1-f3d5a18fd386";
-
-const USER = { name: "Вася", avatar: "В", color: "from-[#5865f2] to-[#7c3aed]" };
-
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [activeChannel, setActiveChannel] = useState("общий");
   const [visibleMessages, setVisibleMessages] = useState<ChatMessage[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [inputText, setInputText] = useState("");
-  const [sending, setSending] = useState(false);
   const [micActive, setMicActive] = useState(false);
   const [soundActive, setSoundActive] = useState(true);
   const [statsVisible, setStatsVisible] = useState(false);
   const [featuresVisible, setFeaturesVisible] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
-  const chatScrollRef = useRef<HTMLDivElement>(null);
-  const lastIdRef = useRef(0);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const messageIndexRef = useRef(0);
 
-  // Загрузка сообщений при смене канала
+  // Живой чат — добавляем сообщения по одному
   useEffect(() => {
-    setVisibleMessages([]);
-    lastIdRef.current = 0;
-    setLoading(true);
-    fetch(`${API_URL}?channel=${encodeURIComponent(activeChannel)}`)
-      .then((r) => r.json())
-      .then((msgs: ChatMessage[]) => {
-        setVisibleMessages(msgs);
-        if (msgs.length > 0) lastIdRef.current = msgs[msgs.length - 1].id;
-      })
-      .finally(() => setLoading(false));
-  }, [activeChannel]);
-
-  // Поллинг новых сообщений каждые 3 секунды
-  useEffect(() => {
-    const poll = () => {
-      fetch(`${API_URL}?channel=${encodeURIComponent(activeChannel)}`)
-        .then((r) => r.json())
-        .then((msgs: ChatMessage[]) => {
-          const newMsgs = msgs.filter((m) => m.id > lastIdRef.current);
-          if (newMsgs.length > 0) {
-            setVisibleMessages((prev) => [...prev, ...newMsgs]);
-            lastIdRef.current = newMsgs[newMsgs.length - 1].id;
-          }
-        })
-        .catch(() => {});
+    const addMessage = () => {
+      if (messageIndexRef.current < DEMO_MESSAGES.length) {
+        setIsTyping(true);
+        const delay = 800 + Math.random() * 600;
+        setTimeout(() => {
+          setIsTyping(false);
+          setVisibleMessages((prev) => [...prev, DEMO_MESSAGES[messageIndexRef.current]]);
+          messageIndexRef.current++;
+        }, delay);
+      } else {
+        // Зациклить
+        setTimeout(() => {
+          messageIndexRef.current = 0;
+          setVisibleMessages([]);
+        }, 3000);
+      }
     };
-    const interval = setInterval(poll, 3000);
-    return () => clearInterval(interval);
-  }, [activeChannel]);
 
-  // Прокрутка чата вниз — только внутри контейнера, не всей страницы
+    const interval = setInterval(addMessage, 2200);
+    addMessage();
+    return () => clearInterval(interval);
+  }, []);
+
+  // Прокрутка чата вниз
   useEffect(() => {
-    const container = chatScrollRef.current;
-    if (container) {
-      container.scrollTop = container.scrollHeight;
-    }
-  }, [visibleMessages]);
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [visibleMessages, isTyping]);
 
   // Intersection Observer для анимации секций
   useEffect(() => {
@@ -227,29 +175,18 @@ const Index = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSendMessage = async () => {
-    const text = inputText.trim();
-    if (!text || sending) return;
+  const handleSendMessage = () => {
+    if (!inputText.trim()) return;
+    const newMsg: ChatMessage = {
+      id: Date.now(),
+      user: "Вася",
+      avatar: "В",
+      color: "from-[#5865f2] to-[#7c3aed]",
+      text: inputText,
+      time: new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }),
+    };
+    setVisibleMessages((prev) => [...prev, newMsg]);
     setInputText("");
-    setSending(true);
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          channel: activeChannel,
-          user: USER.name,
-          avatar: USER.avatar,
-          color: USER.color,
-          text,
-        }),
-      });
-      const msg: ChatMessage = await res.json();
-      setVisibleMessages((prev) => [...prev, msg]);
-      lastIdRef.current = msg.id;
-    } finally {
-      setSending(false);
-    }
   };
 
   return (
@@ -478,7 +415,7 @@ const Index = () => {
           </div>
 
           {/* Сообщения */}
-          <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-1">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-1">
             {/* Приветствие канала */}
             <div className="flex flex-col items-start mb-6">
               <div className="w-16 h-16 bg-[#5865f2] rounded-full flex items-center justify-center mb-3 shadow-lg shadow-[#5865f2]/30">
@@ -491,39 +428,40 @@ const Index = () => {
               <div className="w-full h-px bg-[#40444b] my-4"></div>
             </div>
 
-            {/* Загрузка */}
-            {loading && (
-              <div className="flex items-center gap-2 px-2 py-3 text-[#b9bbbe] text-sm">
-                <div className="w-4 h-4 border-2 border-[#5865f2] border-t-transparent rounded-full animate-spin"></div>
-                Загрузка сообщений...
-              </div>
-            )}
-
-            {/* Сообщения из БД */}
-            {!loading && visibleMessages.filter(Boolean).map((msg) => (
+            {/* Живые сообщения */}
+            {visibleMessages.map((msg, index) => (
               <div
                 key={msg.id}
                 className="flex gap-3 px-1 py-1 rounded-lg hover:bg-[#32353b] group transition-colors animate-msg-in"
+                style={{ animationDelay: `${index * 30}ms` }}
               >
                 <div
-                  className={`w-9 h-9 bg-gradient-to-br ${msg.color ?? "from-[#5865f2] to-[#7c3aed]"} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm`}
+                  className={`w-9 h-9 bg-gradient-to-br ${msg.color} rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm`}
                 >
                   <span className="text-white text-xs font-bold">{msg.avatar}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2">
                     <span className="text-white font-semibold text-sm hover:underline cursor-pointer">{msg.user}</span>
-                    <span className="text-[#72767d] text-[10px]">в {msg.time}</span>
+                    <span className="text-[#72767d] text-[10px]">Сегодня в {msg.time}</span>
                   </div>
                   <p className="text-[#dcddde] text-sm leading-relaxed">{msg.text}</p>
                 </div>
               </div>
             ))}
 
-            {/* Пустой канал */}
-            {!loading && visibleMessages.length === 0 && (
-              <p className="text-[#72767d] text-sm px-2">Сообщений пока нет. Напиши первым!</p>
+            {/* Индикатор печатания */}
+            {isTyping && (
+              <div className="flex items-center gap-2 px-2 py-1 animate-fade-in">
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 bg-[#b9bbbe] rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                  <div className="w-2 h-2 bg-[#b9bbbe] rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                  <div className="w-2 h-2 bg-[#b9bbbe] rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                </div>
+                <span className="text-[#b9bbbe] text-xs">кто-то печатает...</span>
+              </div>
             )}
+            <div ref={chatEndRef} />
           </div>
 
           {/* Поле ввода */}
@@ -546,13 +484,9 @@ const Index = () => {
                 </button>
                 <button
                   onClick={handleSendMessage}
-                  disabled={sending || !inputText.trim()}
-                  className={`transition-colors ${inputText.trim() && !sending ? "text-[#5865f2] hover:text-[#4752c4]" : "text-[#b9bbbe]"}`}
+                  className={`text-[#b9bbbe] hover:text-[#5865f2] transition-colors ${inputText.trim() ? "text-[#5865f2]" : ""}`}
                 >
-                  {sending
-                    ? <div className="w-4 h-4 border-2 border-[#5865f2] border-t-transparent rounded-full animate-spin" />
-                    : <Send className="w-4 h-4" />
-                  }
+                  <Send className="w-4 h-4" />
                 </button>
               </div>
             </div>
