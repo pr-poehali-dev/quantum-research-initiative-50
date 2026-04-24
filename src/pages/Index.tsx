@@ -40,16 +40,53 @@ interface ChatMessage {
   time: string;
 }
 
-const DEMO_MESSAGES: ChatMessage[] = [
-  { id: 1, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Привет всем! Только зарегистрировалась 🎉", time: "12:01" },
-  { id: 2, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Добро пожаловать! Здесь всё очень удобно 👍", time: "12:02" },
-  { id: 3, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Качество звонков просто супер 🔥", time: "12:03" },
-  { id: 4, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Уже провёл первую встречу с командой 💼", time: "12:05" },
-  { id: 5, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Боже, видеозвонки без лагов! Наконец-то 😍", time: "12:06" },
-  { id: 6, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Регистрация за 30 секунд — это не шутки 😄", time: "12:08" },
-  { id: 7, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Уже позвал всех друзей. Все в восторге!", time: "12:09" },
-  { id: 8, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Групповые чаты работают молниеносно ⚡", time: "12:11" },
-];
+const CHANNEL_MESSAGES: Record<string, ChatMessage[]> = {
+  общий: [
+    { id: 1, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Привет всем! Только зарегистрировалась 🎉", time: "12:01" },
+    { id: 2, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Добро пожаловать! Здесь всё очень удобно 👍", time: "12:02" },
+    { id: 3, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Качество звонков просто супер 🔥", time: "12:03" },
+    { id: 4, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Уже провёл первую встречу с командой 💼", time: "12:05" },
+    { id: 5, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Регистрация за 30 секунд — это не шутки 😄", time: "12:08" },
+    { id: 6, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Уже зову всех подруг сюда 😍", time: "12:10" },
+    { id: 7, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Наконец мессенджер без рекламы!", time: "12:12" },
+  ],
+  знакомства: [
+    { id: 1, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Привет! Кто из Москвы? 👋", time: "13:00" },
+    { id: 2, user: "Артём", avatar: "Ар", color: "from-blue-400 to-sky-500", text: "Я из Питера, но привет всем! 🙌", time: "13:01" },
+    { id: 3, user: "Лена", avatar: "Л", color: "from-violet-400 to-purple-500", text: "Ищу собеседника для общения на английском 🇬🇧", time: "13:03" },
+    { id: 4, user: "Артём", avatar: "Ар", color: "from-blue-400 to-sky-500", text: "Лена, я могу! Пишу в личку ✉️", time: "13:04" },
+    { id: 5, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Тут такие милые люди 🥰", time: "13:06" },
+    { id: 6, user: "Олег", avatar: "О", color: "from-amber-400 to-orange-500", text: "Всем привет! Только пришёл 😊", time: "13:08" },
+    { id: 7, user: "Лена", avatar: "Л", color: "from-violet-400 to-purple-500", text: "Олег, добро пожаловать! 🎉", time: "13:09" },
+  ],
+  новости: [
+    { id: 1, user: "ВайбБот", avatar: "🤖", color: "from-[#5865f2] to-indigo-500", text: "📣 Новая версия 2.5 — добавлены реакции на сообщения!", time: "09:00" },
+    { id: 2, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Реакции наконец-то! Ждал этого 🎯", time: "09:05" },
+    { id: 3, user: "ВайбБот", avatar: "🤖", color: "from-[#5865f2] to-indigo-500", text: "🛡️ Обновление безопасности: улучшено шифрование звонков.", time: "09:10" },
+    { id: 4, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "Отличные новости! Безопасность — это важно 🔒", time: "09:12" },
+    { id: 5, user: "ВайбБот", avatar: "🤖", color: "from-[#5865f2] to-indigo-500", text: "📱 iOS-приложение обновлено — исправлены баги с уведомлениями.", time: "09:20" },
+    { id: 6, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Да! Наконец-то уведомления работают 🙏", time: "09:22" },
+    { id: 7, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Команда ВайбЧат не перестаёт удивлять 🚀", time: "09:25" },
+  ],
+  помощь: [
+    { id: 1, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Как поменять аватар профиля?", time: "14:00" },
+    { id: 2, user: "Саппорт", avatar: "S", color: "from-[#5865f2] to-violet-500", text: "Привет! Зайди в Настройки → Профиль → Аватар 😊", time: "14:01" },
+    { id: 3, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Нашёл, спасибо! ❤️", time: "14:02" },
+    { id: 4, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Как создать групповой чат?", time: "14:05" },
+    { id: 5, user: "Саппорт", avatar: "S", color: "from-[#5865f2] to-violet-500", text: "Нажми '+' рядом с каналами и выбери 'Создать группу' 👍", time: "14:06" },
+    { id: 6, user: "Катя", avatar: "К", color: "from-pink-400 to-rose-500", text: "Супер, всё получилось! Команда лучшая 🌟", time: "14:08" },
+    { id: 7, user: "Олег", avatar: "О", color: "from-amber-400 to-orange-500", text: "Можно ли восстановить удалённое сообщение?", time: "14:10" },
+  ],
+  мемы: [
+    { id: 1, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Когда наконец починили уведомления 😭🎉", time: "15:00" },
+    { id: 2, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "АХАХАХА это точно про меня 💀", time: "15:01" },
+    { id: 3, user: "Максим", avatar: "М", color: "from-green-500 to-teal-500", text: "Кто придумывает эти мемы — гений 😂", time: "15:03" },
+    { id: 4, user: "Анна", avatar: "А", color: "from-purple-500 to-pink-500", text: "Я уже час тут сижу вместо работы 💅", time: "15:05" },
+    { id: 5, user: "Вася", avatar: "В", color: "from-cyan-400 to-blue-500", text: "Анна, я тебя понимаю 😅😅😅", time: "15:06" },
+    { id: 6, user: "Игорь", avatar: "И", color: "from-blue-400 to-indigo-500", text: "Этот чат — лучшее что случалось с моей продуктивностью... нет. 💀", time: "15:08" },
+    { id: 7, user: "Даша", avatar: "Д", color: "from-orange-400 to-red-500", text: "☠️☠️☠️ УМЕРЛА", time: "15:09" },
+  ],
+};
 
 const STATS = [
   { value: "2M+", label: "Пользователей", icon: <Users className="w-5 h-5" /> },
@@ -125,10 +162,15 @@ const Index = () => {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const messageIndexRef = useRef(0);
 
-  // Живой чат — добавляем сообщения по одному
+  // Живой чат — добавляем сообщения по одному, перезапуск при смене канала
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
     let cancelled = false;
+    const messages = CHANNEL_MESSAGES[activeChannel] ?? [];
+
+    messageIndexRef.current = 0;
+    setVisibleMessages([]);
+    setIsTyping(false);
 
     const scheduleNext = (delay: number) => {
       timeoutId = setTimeout(() => {
@@ -136,12 +178,12 @@ const Index = () => {
 
         const idx = messageIndexRef.current;
 
-        if (idx < DEMO_MESSAGES.length) {
+        if (idx < messages.length) {
           setIsTyping(true);
           timeoutId = setTimeout(() => {
             if (cancelled) return;
             setIsTyping(false);
-            const msg = DEMO_MESSAGES[idx];
+            const msg = messages[idx];
             if (msg) {
               setVisibleMessages((prev) => [...prev, msg]);
               messageIndexRef.current = idx + 1;
@@ -160,12 +202,12 @@ const Index = () => {
       }, delay);
     };
 
-    scheduleNext(800);
+    scheduleNext(500);
     return () => {
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, []);
+  }, [activeChannel]);
 
   // Прокрутка чата вниз — только внутри контейнера, не всей страницы
   useEffect(() => {
