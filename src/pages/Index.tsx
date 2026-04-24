@@ -121,6 +121,7 @@ const Index = () => {
   const [featuresVisible, setFeaturesVisible] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const messageIndexRef = useRef(0);
 
@@ -166,9 +167,12 @@ const Index = () => {
     };
   }, []);
 
-  // Прокрутка чата вниз
+  // Прокрутка чата вниз — только внутри контейнера, не всей страницы
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = chatScrollRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [visibleMessages, isTyping]);
 
   // Intersection Observer для анимации секций
@@ -432,7 +436,7 @@ const Index = () => {
           </div>
 
           {/* Сообщения */}
-          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-1">
+          <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-1">
             {/* Приветствие канала */}
             <div className="flex flex-col items-start mb-6">
               <div className="w-16 h-16 bg-[#5865f2] rounded-full flex items-center justify-center mb-3 shadow-lg shadow-[#5865f2]/30">
